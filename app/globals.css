@@ -1,26 +1,929 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-oliva: #2a3618;
+  --color-molsa: #5e7136;
+  --color-crema: #ede4dd;
+  --color-marro: #3b2f2a;
+  --color-carbo: #272b29;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-display: var(--font-display);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --breakpoint-xs: 420px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-oliva);
+  color: var(--color-crema);
+  font-family: var(--font-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: var(--color-molsa) var(--color-carbo);
+}
+
+::selection {
+  background: var(--color-molsa);
+  color: var(--color-crema);
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Fixed grain layer. Never applied to scrolling containers: see DOM-cost note in
+   design-taste-frontend skill, Section 6.E. */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+.field-input {
+  border-radius: 0;
+  border: 2px solid var(--color-oliva);
+  background: transparent;
+  padding: 0.625rem 0.75rem;
+  font-size: 1rem;
+  color: var(--color-oliva);
+  caret-color: var(--color-molsa);
+}
+
+.field-input::placeholder {
+  color: color-mix(in srgb, var(--color-oliva) 80%, transparent);
+}
+
+.mask-paellera {
+  -webkit-mask: url("/brand/Illustration.svg") center / contain no-repeat;
+  mask: url("/brand/Illustration.svg") center / contain no-repeat;
+}
+
+/* Veu de marca: CM Geom amb l'alternativa ss01 i interlineat molt tancat. */
+.display {
+  font-family: var(--font-display);
+  font-feature-settings: "ss01", "liga";
+  font-weight: 400;
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* Les LL del logotip, dibuixades. Mides tretes del glif L de CM Geom. */
+.ll {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.ell {
+  --stem: calc(0.7em + var(--grow, 0) * 1em);
+  position: relative;
+  display: inline-block;
+  width: 0.36em;
+  height: 0.7em;
+}
+
+.ell::before,
+.ell::after {
+  content: "";
+  position: absolute;
+  left: 0.02em;
+  bottom: 0;
+  background: currentColor;
+}
+
+.ell::before {
+  width: 0.07em;
+  height: var(--stem);
+}
+
+.ell::after {
+  width: 0.34em;
+  height: 0.065em;
+}
+
+.ell + .ell {
+  --stem: calc(0.7em + var(--grow, 0) * 1.45em);
+}
+
+.foto-buida {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.75rem;
+  background: var(--color-molsa);
+  color: var(--color-crema);
+  container-type: size;
+}
+
+.foto-buida__marca {
+  position: absolute;
+  inset: 12%;
+  background: var(--color-oliva);
+}
+
+.foto-buida__text {
+  position: relative;
+  max-width: 28ch;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+@container (max-height: 90px) {
+  .foto-buida__text {
+    display: none;
+  }
+}
+
+.boto {
+  display: inline-block;
+  padding: 0.95rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.boto:active {
+  transform: scale(0.98);
+}
+
+.boto:disabled {
+  opacity: 0.6;
+}
+
+.boto--crema {
+  background: var(--color-crema);
+  color: var(--color-oliva);
+}
+
+.boto--oliva {
+  background: var(--color-oliva);
+  color: var(--color-crema);
+}
+
+.enllac {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  transition: text-underline-offset 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .enllac:hover {
+    text-underline-offset: 0.45em;
+  }
+}
+
+/* Capçalera: barra enganxada a dalt, translúcida, que pren el to de la secció */
+.nav {
+  --vidre: var(--color-oliva);
+  --tinta: var(--color-crema);
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  color: var(--tinta);
+}
+
+:root[data-nav-tone="light"] .nav {
+  --vidre: var(--color-crema);
+  --tinta: var(--color-oliva);
+}
+
+.nav__barra,
+.nav__menu {
+  border-bottom: 1px solid color-mix(in srgb, var(--tinta) 14%, transparent);
+  background: color-mix(in srgb, var(--vidre) 72%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  transition: background-color 240ms linear, border-color 240ms linear;
+}
+
+.nav__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  height: 3.25rem;
+  padding-inline: 1.25rem 0.75rem;
+}
+
+.nav__marca {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: opacity 240ms linear;
+}
+
+:root[data-nav-hero="true"] .nav__marca {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav__logo {
+  display: block;
+  width: 102px;
+  height: 22px;
+  background: currentColor;
+  -webkit-mask: url("/brand/logo.svg") left center / contain no-repeat;
+  mask: url("/brand/logo.svg") left center / contain no-repeat;
+}
+
+.nav__paellera {
+  display: block;
+  width: 22px;
+  height: 19px;
+  background: currentColor;
+  transform: rotate(calc(var(--page-p, 0) * 1440deg));
+}
+
+.nav__apartats {
+  display: none;
+}
+
+.nav__accions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav__cta {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+  white-space: nowrap;
+}
+
+.nav__boto {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.nav__menu {
+  display: grid;
+  padding: 0.25rem 1.25rem 0.75rem;
+  background: color-mix(in srgb, var(--vidre) 88%, transparent);
+}
+
+.nav__menu-enllac {
+  padding-block: 0.75rem;
+  font-family: var(--font-display);
+  font-feature-settings: "ss01", "liga";
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.nav__menu-enllac + .nav__menu-enllac {
+  border-top: 1px solid color-mix(in srgb, var(--tinta) 22%, transparent);
+}
+
+@media (max-width: 359px) {
+  .nav__barra {
+    padding-inline: 0.75rem 0.25rem;
+  }
+
+  .nav__paellera {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .nav__barra {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    padding-inline: 2.5rem;
+  }
+
+  .nav__apartats {
+    display: flex;
+    gap: 1.75rem;
+  }
+
+  .nav__enllac {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: underline transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35em;
+    transition: text-decoration-color 160ms linear;
+  }
+
+  .nav__enllac[aria-current] {
+    text-decoration-color: currentColor;
+  }
+
+  .nav__accions {
+    justify-content: flex-end;
+  }
+
+  .nav__boto,
+  .nav__menu {
+    display: none;
+  }
+}
+
+@media (hover: hover) and (min-width: 900px) {
+  .nav__enllac:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* Hero: es cau dins la paellera */
+.hero__stage {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  color: var(--color-crema);
+}
+
+.motion .hero {
+  height: 220svh;
+}
+
+.motion .hero__stage {
+  position: sticky;
+  top: 0;
+}
+
+.hero__logo {
+  position: absolute;
+  inset: 0 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.hero__peu {
+  position: absolute;
+  inset: auto 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.hero__frase {
+  font-size: clamp(1.75rem, 3.4vw, 3.25rem);
+  line-height: 1.05;
+}
+
+.hero__esvaeix {
+  opacity: calc(1 - clamp(0, var(--p, 0) / 0.1, 1));
+}
+
+/* Concepte: la foto en segon pla, sota el titular */
+.concepte__cap {
+  position: relative;
+  display: grid;
+  min-height: 82svh;
+}
+
+.concepte__foto {
+  grid-area: 1 / 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.concepte__foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-oliva);
+  opacity: 0.66;
+}
+
+.concepte__foto img {
+  transform: translateY(calc((var(--p, 0.5) - 0.5) * -7%)) scale(1.14);
+}
+
+.concepte__titol {
+  position: relative;
+  grid-area: 1 / 1;
+  align-self: end;
+  padding: 0 1.25rem 1.75rem;
+  color: var(--color-crema);
+  font-size: clamp(3rem, 12.4vw, 4rem);
+}
+
+.concepte__text {
+  padding: 2.5rem 1.25rem 5rem;
+}
+
+.concepte--invertit .concepte__titol {
+  font-size: clamp(2.25rem, 10vw, 3.5rem);
+}
+
+/* Passos: una paellera petita roda per la línia */
+.passos {
+  --avanc: clamp(0, (var(--p, 0.5) - 0.25) / 0.45, 1);
+  --mida: 1.75rem;
+  position: relative;
+  padding-left: 2.75rem;
+}
+
+.passos__via {
+  position: absolute;
+  inset: 0 auto 0 calc(var(--mida) / 2 - 0.5px);
+  width: 1px;
+  background: color-mix(in srgb, var(--color-crema) 40%, transparent);
+}
+
+.passos__paellera {
+  position: absolute;
+  top: calc(var(--avanc) * (100% - var(--mida)));
+  left: calc(0.5px - var(--mida) / 2);
+  width: var(--mida);
+  height: var(--mida);
+  background: var(--color-crema);
+  transform: rotate(calc(var(--avanc) * 720deg));
+}
+
+/* Sabors: el selector canvia color, text i gir de la paellera */
+.dial {
+  position: relative;
+  overflow: hidden;
+  min-height: 100svh;
+  padding: 5.5rem 1.25rem 58vw;
+  background: var(--fons);
+  color: var(--text);
+  transition: background-color 500ms linear, color 500ms linear;
+}
+
+.dial__paellera {
+  --mida: 118vw;
+  position: absolute;
+  bottom: calc(var(--mida) * -0.58);
+  left: calc(50% - var(--mida) / 2);
+  width: var(--mida);
+  height: auto;
+  transform: rotate(var(--gir, 0deg));
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dial__metall {
+  transition: fill 500ms linear;
+}
+
+.dial__foto {
+  opacity: 0;
+  transition: opacity 260ms linear;
+}
+
+.dial__foto[data-actiu="true"] {
+  opacity: 1;
+}
+
+.dial__cos {
+  position: relative;
+}
+
+.dial__selector {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+}
+
+.dial__opcio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.75rem;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  font-family: var(--font-display);
+  font-feature-settings: "ss01", "liga";
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+  text-align: left;
+  opacity: 0.7;
+  transition: opacity 200ms linear;
+}
+
+.dial__nom {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.dial__nom svg {
+  flex: none;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dial__opcio[aria-selected="true"] .dial__nom svg {
+  transform: translateX(0.15em);
+}
+
+.dial__opcio::after {
+  content: "";
+  flex: none;
+  width: 1.15rem;
+  height: 1rem;
+  background: currentColor;
+  -webkit-mask: url("/brand/Illustration.svg") center / contain no-repeat;
+  mask: url("/brand/Illustration.svg") center / contain no-repeat;
+  transform: scale(0) rotate(-90deg);
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dial__opcio[aria-selected="true"] {
+  opacity: 1;
+}
+
+.dial__opcio[aria-selected="true"]::after {
+  transform: none;
+}
+
+@media (hover: hover) {
+  .dial__opcio:hover {
+    opacity: 1;
+  }
+
+  .dial__opcio:hover .dial__nom svg {
+    transform: translateX(0.15em);
+  }
+}
+
+.dial__sabors {
+  display: grid;
+  margin-top: 1.5rem;
+}
+
+.sabor {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 240ms linear, transform 600ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s 240ms;
+}
+
+.sabor[data-actiu="true"] {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition-delay: 0s;
+}
+
+.sabor__nom {
+  font-size: clamp(2.75rem, 13vw, 6rem);
+}
+
+/* Galeria: cinc finestres d'alçades diferents, com les LL del logotip */
+.galeria {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.galeria li {
+  aspect-ratio: 3 / 4;
+}
+
+.galeria li:nth-child(1) {
+  grid-column: span 2;
+  aspect-ratio: 4 / 3;
+}
+
+/* Preguntes */
+.faq-resposta {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 320ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s 320ms;
+}
+
+.faq-resposta > p {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.faq-resposta[data-obert="true"] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* Formulari en forma de frase */
+.frase {
+  font-size: clamp(1.9rem, 8.2vw, 7.25rem);
+  line-height: 1.22;
+  text-wrap: pretty;
+}
+
+.camp {
+  display: inline-block;
+  max-width: 100%;
+  border-bottom: 0.05em solid currentColor;
+  line-height: 1;
+}
+
+.camp input,
+.camp select {
+  max-width: 100%;
+  appearance: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-molsa);
+  font: inherit;
+  font-feature-settings: inherit;
+  letter-spacing: inherit;
+  caret-color: var(--color-oliva);
+  outline: none;
+}
+
+.camp select {
+  field-sizing: content;
+  text-overflow: ellipsis;
+}
+
+.camp input::placeholder {
+  color: var(--color-molsa);
+  opacity: 1;
+}
+
+.camp input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.camp input[type="number"]::-webkit-inner-spin-button {
+  appearance: none;
+}
+
+.camp:focus-within {
+  border-bottom-color: var(--color-molsa);
+  background: color-mix(in srgb, var(--color-molsa) 16%, transparent);
+}
+
+.frase__peu {
+  display: grid;
+  gap: 2rem;
+  margin-top: 3rem;
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+/* Contacte: dues crides grans */
+.contacte {
+  border-top: 1px solid var(--color-oliva);
+}
+
+.contacte__cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--color-oliva);
+  transition: background-color 240ms linear, color 240ms linear, padding 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contacte__nom {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font-family: var(--font-display);
+  font-feature-settings: "ss01", "liga";
+  font-size: clamp(2.75rem, 12vw, 7rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.contacte__dada {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+@media (hover: hover) {
+  .contacte__cta:hover {
+    padding-inline: 1.5rem;
+    background: var(--color-oliva);
+    color: var(--color-crema);
+  }
+}
+
+/* Peu de pàgina */
+.peu__titol {
+  margin-bottom: 0.75rem;
+  font-family: var(--font-display);
+  font-feature-settings: "ss01", "liga";
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+}
+
+.peu__llista {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.enllac-net {
+  color: color-mix(in srgb, var(--color-crema) 80%, transparent);
+  text-decoration: underline transparent;
+  text-underline-offset: 0.25em;
+  transition: color 160ms linear, text-decoration-color 160ms linear;
+}
+
+@media (hover: hover) {
+  .enllac-net:hover {
+    color: var(--color-crema);
+    text-decoration-color: currentColor;
+  }
+}
+
+.logo-gegant {
+  display: block;
+  width: 100%;
+  aspect-ratio: 862 / 180;
+  background: var(--color-crema);
+  -webkit-mask: url("/brand/logo.svg") center / contain no-repeat;
+  mask: url("/brand/logo.svg") center / contain no-repeat;
+}
+
+@media (min-width: 768px) {
+  .hero__logo {
+    inset: 0 2.5rem;
+  }
+
+  .hero__peu {
+    inset: auto 2.5rem 2rem;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .contacte {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    border-top: 0;
+  }
+
+  .contacte__cta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-oliva);
+  }
+
+  .contacte__cta:hover {
+    padding-inline: 1rem;
+  }
+
+  .contacte__nom {
+    font-size: clamp(1.75rem, 2.6vw, 2.5rem);
+  }
+
+  .contacte__dada {
+    font-size: 1.0625rem;
+  }
+
+  .concepte {
+    position: relative;
+    min-height: 100svh;
+    padding: 9rem 2.5rem 6rem;
+  }
+
+  .concepte__cap {
+    position: static;
+    display: block;
+    min-height: 0;
+  }
+
+  .concepte__foto {
+    position: absolute;
+    inset: 0 0 0 44%;
+  }
+
+  /* El color canvia just a la vora de la foto: 44% de la secció, menys el marge. */
+  .concepte__titol {
+    --corte: calc((100% + 5rem) * 0.44 - 2.5rem);
+    padding: 0;
+    color: transparent;
+    font-size: clamp(3.5rem, 6vw, 6.5rem);
+    background: linear-gradient(90deg, var(--color-oliva) var(--corte), var(--color-crema) var(--corte));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .concepte__text {
+    position: relative;
+    width: 36%;
+    margin-top: 3.5rem;
+    padding: 0;
+  }
+
+  /* Mirall: foto a l'esquerra, i el titular passa de crema a oliva. */
+  .concepte--invertit .concepte__foto {
+    inset: 0 44% 0 0;
+  }
+
+  .concepte--invertit .concepte__titol {
+    --corte: calc((100% + 5rem) * 0.56 - 2.5rem);
+    font-size: clamp(3.5rem, 6vw, 6.5rem);
+    background-image: linear-gradient(90deg, var(--color-crema) var(--corte), var(--color-oliva) var(--corte));
+  }
+
+  .concepte--invertit .concepte__text {
+    width: 38%;
+    margin-left: calc((100% + 5rem) * 0.56 - 0.5rem);
+  }
+
+  .passos {
+    padding: 2.75rem 0 0;
+  }
+
+  .passos__via {
+    inset: calc(var(--mida) / 2) 0 auto;
+    width: auto;
+    height: 1px;
+  }
+
+  .passos__paellera {
+    top: calc(0.5px - var(--mida) / 2);
+    left: calc(var(--avanc) * (100% - var(--mida)));
+  }
+
+  .dial {
+    display: flex;
+    align-items: center;
+    padding: 6rem 2.5rem 3rem 50%;
+  }
+
+  .dial__paellera {
+    --mida: min(100svh, 95vw);
+    top: calc(50% + 2rem - var(--mida) * 0.433);
+    bottom: auto;
+    left: calc(var(--mida) * -0.5);
+  }
+
+  .dial__opcio {
+    font-size: 1.5rem;
+  }
+
+  .dial__sabors {
+    margin-top: 2.25rem;
+  }
+
+  .sabor__nom {
+    font-size: clamp(3.25rem, 5.6vw, 7rem);
+  }
+
+  .galeria {
+    display: flex;
+    align-items: flex-end;
+    height: min(78svh, 52rem);
+  }
+
+  .galeria li,
+  .galeria li:nth-child(1) {
+    flex: 1 1 0;
+    height: var(--alt);
+    aspect-ratio: auto;
+    transition: flex-grow 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .galeria li:hover {
+    flex-grow: 1.9;
+  }
+
+  .frase__peu {
+    grid-template-columns: minmax(0, 36rem) auto;
+    align-items: end;
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .dial__paellera,
+  .sabor,
+  .galeria li,
+  .contacte__cta {
+    transition: none;
+  }
 }
